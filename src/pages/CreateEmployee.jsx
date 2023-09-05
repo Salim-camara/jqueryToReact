@@ -42,6 +42,7 @@ const CreateEmployee = () => {
     }
 
     const data = {
+      id: Date.now(),
       firstName,
       lastName,
       birthDate: birthDate.toString(),
