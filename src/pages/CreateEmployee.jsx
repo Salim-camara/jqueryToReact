@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Input from "../components/Input";
 import DatePicker from "react-datepicker";
 import Dropdown from "react-dropdown";
 import PostEmployee from "../store/actions/PostEmployee";
+import Modal from "react-simple-modal-package";
 
 const CreateEmployee = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalErrorVisible, setModalErrorVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [birthDate, setBirthDate] = useState();
@@ -25,7 +28,7 @@ const CreateEmployee = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !firstName ||
       !lastName ||
@@ -37,7 +40,7 @@ const CreateEmployee = () => {
       !cityState ||
       !zip
     ) {
-      alert("Veuillez saisir tous les champs");
+      setModalErrorVisible(true);
       return;
     }
 
@@ -54,11 +57,25 @@ const CreateEmployee = () => {
       zip,
     };
 
+    const tmp = JSON.parse(localStorage.getItem("allEmployees")) || 0;
     dispatch(PostEmployee(data));
+    if (tmp.length < JSON.parse(localStorage.getItem("allEmployees")).length) {
+      setModalVisible(true);
+    }
   };
 
   return (
     <div>
+      <Modal visible={modalVisible} setVisible={setModalVisible}>
+        <p>Employee created !</p>
+      </Modal>
+      <Modal
+        visible={modalErrorVisible}
+        setVisible={setModalErrorVisible}
+        modalStyle={{ backgroundColor: "#d91633" }}
+      >
+        <p style={{ color: "white" }}>Please enter all fields !</p>
+      </Modal>
       <div className="title">
         <h1>HRnet</h1>
       </div>

@@ -28,7 +28,7 @@ const EmployeeList = () => {
 
   return (
     <div>
-      <div id="employee-div" class="container">
+      <div id="employee-div" className="container">
         <h1>Current Employees</h1>
         <DataGrid
           rows={allEmployees}
