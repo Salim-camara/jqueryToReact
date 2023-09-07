@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import GetAllEmployee from "../store/actions/GetAllEmployee";
 
@@ -11,6 +11,7 @@ const EmployeeList = () => {
 
   useEffect(() => {
     dispatch(GetAllEmployee());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns = [
