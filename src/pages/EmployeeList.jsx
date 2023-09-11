@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +7,19 @@ import GetAllEmployee from "../store/actions/GetAllEmployee";
 const EmployeeList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const allEmployees = useSelector((state) => state.EmployeeReducer);
+  const tmpData = useSelector((state) => state.EmployeeReducer);
+  const [allEmployees, setAllEmployees] = useState([]);
+  const [searched, setSearched] = useState("");
 
   useEffect(() => {
     dispatch(GetAllEmployee());
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    setAllEmployees(tmpData);
   }, []);
+
+  useEffect(() => {
+    tmpData && setAllEmployees(tmpData);
+  }, [tmpData]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 130 },
@@ -27,12 +34,40 @@ const EmployeeList = () => {
     { field: "zip", headerName: "Zip", width: 130 },
   ];
 
+  const requestSearch = (searchedVal) => {
+    const filteredRows = tmpData.filter((row) => {
+      return (
+        row.firstName.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.lastName.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.birthDate.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.startDate.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.street.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.city.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.cityState.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.department.toLowerCase().includes(searchedVal.toLowerCase()) ||
+        row.zip.includes(searchedVal)
+      );
+    });
+    setAllEmployees(filteredRows);
+  };
+
   return (
     <div>
       <div id="employee-div" className="container">
         <h1>Current Employees</h1>
+        <div style={{ marginTop: 10, marginBottom: 10, alignItems: "center" }}>
+          <p style={{ margin: 0 }}>Search</p>
+          <input
+            type="text"
+            onChange={(searchVal) => {
+              requestSearch(searchVal.target.value);
+              setSearched(searchVal.target.value);
+            }}
+            value={searched}
+          />
+        </div>
         <DataGrid
-          rows={allEmployees}
+          rows={allEmployees && allEmployees}
           columns={columns}
           initialState={{
             pagination: {
