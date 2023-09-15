@@ -75,7 +75,6 @@ const EmployeeList = () => {
             },
           }}
           pageSizeOptions={[5, 10]}
-          checkboxSelection
         />
         <div onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <p>Home</p>
